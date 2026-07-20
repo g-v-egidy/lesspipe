@@ -255,6 +255,13 @@ show () {
 		if [[ "${cmd[*]}" != "" ]]; then
 			show "-$rest1"
 		else
+			# we are checking the first argument, no unpack cmd found: check if the file is in /var/log or below
+			file1path=$(realpath "$file1" 2>/dev/null)
+			if [[ "$file1path" =~ ^/var/log/ ]]; then
+				# it is likely that the user wants to use follow (F) mode for logfiles: abort to not interfere
+				exit 0
+			fi
+
 			# if nothing to convert, exit without a command
 			isfinal "$file1" "$rest11"
 		fi
